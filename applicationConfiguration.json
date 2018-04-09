@@ -1,0 +1,11 @@
+{
+  "ApplicationConfiguration": {
+    "AuthorizeEndpoint": "https://si-authzserver.vfltest.dk/SEGESOAuthSampleApi_DEBUG/oauth/authorize",
+    "TokenEndpoint": "https://si-authzserver.vfltest.dk/SEGESOAuthSampleApi_DEBUG/oauth/token",
+    "ApiEndpoint": "https://www.example.com/segesoauthsample_debug_api/",
+    "RedirectUri": "https://www.example.com/segesoauthsample_debug/",
+    "ClientId": "SEGESOAuthSampleClient_DEBUG",
+    "ClientSecret": "JUqZoLC5xpkLWo24SCI3lSplJEICCYXlIQfRos4LA",
+    "Scope": "Default"
+  }
+}
