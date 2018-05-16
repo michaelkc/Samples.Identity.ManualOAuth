@@ -2,9 +2,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Seges.Samples.OAuth
 {
@@ -29,6 +31,12 @@ namespace Seges.Samples.OAuth
             Console.WriteLine($"Exchanging refresh token {tokenResponse.RefreshToken} for fresh refresh/access tokens");
             var tokenResponse2 = await demo.ExchangeRefreshTokenForAccessToken(tokenResponse.RefreshToken);
             DumpTokenResponse(tokenResponse2);
+
+            if (applicationConfiguration.PerformTokenValidation)
+            {
+                Console.WriteLine("Validating access token...");
+                Console.WriteLine($"Result: {ValidateToken(tokenResponse2.AccessToken)}");
+            }
 
             Console.WriteLine($"Making fake API call with access token {tokenResponse2.AccessToken} as Bearer token in Authorization header");
             var httpClient = new HttpClient();
@@ -63,6 +71,35 @@ namespace Seges.Samples.OAuth
             Console.WriteLine($"Access token: {tokenResponse.AccessToken}");
             Console.WriteLine($"Refresh token: {tokenResponse.RefreshToken}");
             Console.WriteLine("####################################################################################");
+        }
+
+        private static bool ValidateToken(string token)
+        {
+            var isValid = true;
+
+            var validationParameters = new TokenValidationParameters()
+            {
+                IssuerSigningKey = new X509SecurityKey(new X509Certificate2(@"C:\signing_certificate_public.cer")),
+                ValidAudience = "urn:SEGESOAuthSampleApi_DEBUG",
+                ValidIssuer = "https://si-authzserver.vfltest.dk/",
+                ValidateLifetime = true,
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidateIssuerSigningKey = true
+            };
+
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                SecurityToken validatedToken = null;
+                handler.ValidateToken(token, validationParameters, out validatedToken);
+            }
+            catch (Exception e)
+            {
+                isValid = false;
+            }
+
+            return isValid;
         }
     }
 }

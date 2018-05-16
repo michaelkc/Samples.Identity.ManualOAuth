@@ -6,6 +6,7 @@
     "RedirectUri": "https://www.example.com/segesoauthsample_debug/",
     "ClientId": "SEGESOAuthSampleClient_DEBUG",
     "ClientSecret": "JUqZoLC5xpkLWo24SCI3lSplJEICCYXlIQfRos4LA",
-    "Scope": "Default"
+    "Scope": "Default",
+    "PerformTokenValidation":  "false"
   }
 }
